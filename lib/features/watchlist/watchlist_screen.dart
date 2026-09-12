@@ -6,6 +6,7 @@ import '../../domain/models/stock.dart';
 import '../../shared/app_text_styles.dart';
 import '../../shared/toast/toast_notifier.dart';
 import '../../shared/widgets/empty_state.dart';
+import '../../shared/widgets/refresh_icon.dart';
 import '../../theme/theme.dart';
 import '../detail/detail_screen.dart';
 import 'watchlist_providers.dart';
@@ -94,8 +95,7 @@ class _WatchlistHeader extends ConsumerWidget {
                                 color: colors.textSecondary,
                               ),
                             )
-                          : Icon(
-                              Icons.refresh_rounded,
+                          : RefreshIcon(
                               size: dimens.iconMd,
                               color: colors.textPrimary,
                             ),
