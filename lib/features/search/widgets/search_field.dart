@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../shared/app_text_styles.dart';
+import '../../../shared/widgets/app_icon.dart';
 import '../../../theme/theme.dart';
 import '../search_providers.dart';
 
@@ -55,9 +56,9 @@ class _SearchFieldState extends ConsumerState<SearchField> {
         ),
         child: Row(
           children: <Widget>[
-            Icon(
-              Icons.search_rounded,
-              size: dimens.iconMd,
+            AppSvgIcon(
+              AppIcons.search16,
+              size: dimens.iconSm,
               color: colors.textTertiary,
             ),
             SizedBox(width: dimens.space2),
@@ -85,8 +86,8 @@ class _SearchFieldState extends ConsumerState<SearchField> {
               child: InkResponse(
                 radius: dimens.space4,
                 onTap: _clear,
-                child: Icon(
-                  Icons.close_rounded,
+                child: AppSvgIcon(
+                  AppIcons.x,
                   size: dimens.iconSm,
                   color: colors.textTertiary,
                 ),

@@ -8,6 +8,7 @@ import '../../domain/models/quote.dart';
 import '../../domain/models/stock.dart';
 import '../../shared/app_text_styles.dart';
 import '../../shared/price_colors.dart';
+import '../../shared/widgets/app_icon.dart';
 import '../../shared/widgets/favorite_button.dart';
 import '../../shared/widgets/skeleton_box.dart';
 import '../../theme/theme.dart';
@@ -146,14 +147,10 @@ class _DetailAppBar extends StatelessWidget {
                 child: InkResponse(
                   radius: dimens.space5,
                   onTap: () => Navigator.of(context).maybePop(),
-                  child: SizedBox(
-                    width: dimens.iconMd,
-                    height: dimens.iconMd,
-                    child: Icon(
-                      Icons.arrow_back_ios_new_rounded,
-                      size: 18,
-                      color: colors.textSecondary,
-                    ),
+                  child: AppSvgIcon(
+                    AppIcons.back,
+                    size: dimens.iconMd,
+                    color: colors.textSecondary,
                   ),
                 ),
               ),

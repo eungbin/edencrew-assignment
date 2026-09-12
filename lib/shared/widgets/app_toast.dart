@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../theme/theme.dart';
 import '../app_text_styles.dart';
 import '../toast/toast_notifier.dart';
+import 'app_icon.dart';
 import 'app_tab_bar.dart';
 
 /// 앱 전체 위에 토스트를 얹는 호스트입니다. `MaterialApp.builder`에서 감쌉니다.
@@ -84,8 +85,8 @@ class _ToastCard extends StatelessWidget {
         ),
         child: Row(
           children: <Widget>[
-            Icon(
-              added ? Icons.star_rounded : Icons.star_outline_rounded,
+            AppSvgIcon(
+              added ? AppIcons.starFill22 : AppIcons.star22,
               size: 18,
               color: added ? colors.favoriteActive : colors.favoriteInactive,
             ),

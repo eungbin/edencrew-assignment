@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../theme/theme.dart';
 import '../app_text_styles.dart';
+import 'app_icon.dart';
 
 /// 관심 / 검색 화면을 오가는 하단 탭 바입니다.
 ///
@@ -42,13 +43,13 @@ class AppTabBar extends StatelessWidget {
           child: Row(
             children: <Widget>[
               _TabItem(
-                icon: Icons.star_rounded,
+                icon: AppIcons.starFill22,
                 label: '관심',
                 selected: currentIndex == 0,
                 onTap: () => onSelected(0),
               ),
               _TabItem(
-                icon: Icons.search_rounded,
+                icon: AppIcons.search22,
                 label: '검색',
                 selected: currentIndex == 1,
                 onTap: () => onSelected(1),
@@ -69,7 +70,7 @@ class _TabItem extends StatelessWidget {
     required this.onTap,
   });
 
-  final IconData icon;
+  final String icon;
   final String label;
   final bool selected;
   final VoidCallback onTap;
@@ -91,7 +92,7 @@ class _TabItem extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Icon(icon, size: 22, color: color),
+                AppSvgIcon(icon, size: 22, color: color),
                 const SizedBox(height: 3),
                 Text(
                   label,

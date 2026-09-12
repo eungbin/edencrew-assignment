@@ -5,6 +5,7 @@ import '../../domain/models/stock.dart';
 import '../../features/watchlist/watchlist_providers.dart';
 import '../../theme/theme.dart';
 import '../toast/toast_notifier.dart';
+import 'app_icon.dart';
 
 /// 관심 등록/해제 별 버튼입니다. 검색 결과 행과 상세 헤더에서 같이 씁니다.
 ///
@@ -37,8 +38,8 @@ class FavoriteButton extends ConsumerWidget {
         child: SizedBox(
           width: size,
           height: size,
-          child: Icon(
-            isFavorite ? Icons.star_rounded : Icons.star_outline_rounded,
+          child: AppSvgIcon(
+            isFavorite ? AppIcons.starFill22 : AppIcons.star22,
             size: size,
             color: isFavorite ? colors.favoriteActive : colors.favoriteInactive,
           ),

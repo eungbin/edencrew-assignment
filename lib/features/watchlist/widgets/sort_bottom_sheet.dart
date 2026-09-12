@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../shared/app_text_styles.dart';
+import '../../../shared/widgets/app_icon.dart';
 import '../../../theme/theme.dart';
 import '../watchlist_providers.dart';
 
@@ -107,7 +108,7 @@ class _SortOption extends StatelessWidget {
               ),
             ),
             if (selected)
-              Icon(Icons.check_rounded, size: 24, color: colors.textPrimary),
+              AppSvgIcon(AppIcons.check, size: 24, color: colors.textPrimary),
           ],
         ),
       ),

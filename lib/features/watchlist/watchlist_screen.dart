@@ -5,8 +5,8 @@ import '../../domain/models/quote.dart';
 import '../../domain/models/stock.dart';
 import '../../shared/app_text_styles.dart';
 import '../../shared/toast/toast_notifier.dart';
+import '../../shared/widgets/app_icon.dart';
 import '../../shared/widgets/empty_state.dart';
-import '../../shared/widgets/refresh_icon.dart';
 import '../../theme/theme.dart';
 import '../detail/detail_screen.dart';
 import 'watchlist_providers.dart';
@@ -29,8 +29,12 @@ class WatchlistScreen extends ConsumerWidget {
         const _WatchlistHeader(),
         Expanded(
           child: stocks.isEmpty
-              ? const EmptyState(
-                  icon: Icon(Icons.star_outline_rounded),
+              ? EmptyState(
+                  icon: AppSvgIcon(
+                    AppIcons.star40,
+                    size: 40,
+                    color: context.colors.textDisabled,
+                  ),
                   title: '관심 종목이 없습니다',
                   description: '검색 탭에서 종목을 찾아\n별 아이콘을 눌러 추가해 주세요.',
                 )
@@ -95,9 +99,10 @@ class _WatchlistHeader extends ConsumerWidget {
                                 color: colors.textSecondary,
                               ),
                             )
-                          : RefreshIcon(
+                          : AppSvgIcon(
+                              AppIcons.refresh,
                               size: dimens.iconMd,
-                              color: colors.textPrimary,
+                              color: colors.textSecondary,
                             ),
                     ),
                   ),
@@ -140,8 +145,8 @@ class _SortChip extends StatelessWidget {
                   color: colors.textSecondary,
                 ),
               ),
-              Icon(
-                Icons.arrow_downward_rounded,
+              AppSvgIcon(
+                AppIcons.align,
                 size: dimens.iconMd,
                 color: colors.textSecondary,
               ),

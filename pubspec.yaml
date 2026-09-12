@@ -39,6 +39,7 @@ dependencies:
   html: ^0.15.7
   charset: ^2.0.1
   shared_preferences: ^2.5.5
+  flutter_svg: ^2.3.0
 
 dev_dependencies:
   flutter_test:
@@ -64,6 +65,7 @@ flutter:
 
   assets:
     - assets/mock/
+    - assets/icons/
 
   fonts:
     - family: NotoSansKR
