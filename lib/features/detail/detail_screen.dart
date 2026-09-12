@@ -262,7 +262,8 @@ class _ChartSection extends StatelessWidget {
   final AsyncValue<List<DailyPrice>> daily;
   final VoidCallback onRetry;
 
-  static const double height = 200;
+  /// 시안의 차트 높이 200에 날짜 라벨 줄이 더해진 높이입니다. (CandleChart 참고)
+  static const double height = CandleChart.totalHeight;
 
   @override
   Widget build(BuildContext context) {
