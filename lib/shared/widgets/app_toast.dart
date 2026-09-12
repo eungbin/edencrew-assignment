@@ -20,6 +20,11 @@ class ToastHost extends ConsumerWidget {
     final ToastMessage? toast = ref.watch(toastProvider);
     final AppDimens dimens = context.dimens;
     final double bottomInset = MediaQuery.paddingOf(context).bottom;
+    final double keyboard = MediaQuery.viewInsetsOf(context).bottom;
+    // 키보드가 올라와 있으면(검색 중 별을 누른 경우) 키보드 위 12px에 띄웁니다.
+    final double bottom = keyboard > 0
+        ? keyboard + dimens.space3
+        : bottomInset + AppTabBar.barHeight + dimens.space3;
 
     return Stack(
       children: <Widget>[
@@ -27,7 +32,7 @@ class ToastHost extends ConsumerWidget {
         Positioned(
           left: dimens.space4,
           right: dimens.space4,
-          bottom: bottomInset + AppTabBar.barHeight + dimens.space3,
+          bottom: bottom,
           child: IgnorePointer(
             child: AnimatedSwitcher(
               duration: const Duration(milliseconds: 220),
