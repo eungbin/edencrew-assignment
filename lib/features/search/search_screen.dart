@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/models/stock.dart';
 import '../../shared/app_text_styles.dart';
 import '../../shared/widgets/empty_state.dart';
+import '../../shared/widgets/search_off_icon.dart';
 import '../../theme/theme.dart';
 import '../detail/detail_screen.dart';
 import 'search_providers.dart';
@@ -33,7 +34,7 @@ class _SearchBody extends ConsumerWidget {
     final String query = ref.watch(searchQueryProvider).trim();
     if (query.isEmpty) {
       return const EmptyState(
-        icon: Icons.search_rounded,
+        icon: Icon(Icons.search_rounded),
         title: '종목을 검색해 보세요',
         description: '종목명 또는 종목코드 6자리로\n검색하실 수 있습니다.',
       );
@@ -53,7 +54,7 @@ class _SearchBody extends ConsumerWidget {
 
     if (stocks.isEmpty && !results.isLoading) {
       return EmptyState(
-        icon: Icons.search_off_rounded,
+        icon: SearchOffIcon(size: 40, color: context.colors.textDisabled),
         title: '검색 결과가 없습니다',
         // 검색어가 아주 길면 EmptyState가 4줄에서 말줄임 처리합니다.
         description: "'$query'와\n일치하는 검색 결과를 찾지 못했습니다.",

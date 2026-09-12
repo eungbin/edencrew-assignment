@@ -29,7 +29,7 @@ class WatchlistScreen extends ConsumerWidget {
         Expanded(
           child: stocks.isEmpty
               ? const EmptyState(
-                  icon: Icons.star_outline_rounded,
+                  icon: Icon(Icons.star_outline_rounded),
                   title: '관심 종목이 없습니다',
                   description: '검색 탭에서 종목을 찾아\n별 아이콘을 눌러 추가해 주세요.',
                 )

@@ -15,7 +15,8 @@ class EmptyState extends StatelessWidget {
     required this.description,
   });
 
-  final IconData icon;
+  /// 40px 아이콘. `Icon` 또는 직접 그린 아이콘 위젯을 넣습니다.
+  final Widget icon;
   final String title;
   final String description;
 
@@ -30,7 +31,10 @@ class EmptyState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Icon(icon, size: 40, color: colors.textDisabled),
+            IconTheme(
+              data: IconThemeData(size: 40, color: colors.textDisabled),
+              child: icon,
+            ),
             SizedBox(height: dimens.space3),
             Text(
               title,
