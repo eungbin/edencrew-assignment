@@ -33,9 +33,11 @@ class FakeSiseServer {
     final String body = _template
         .replaceAll('2026.', '${2026 - page}.')
         .replaceAll('page=756', 'page=3');
-    return http.Response(body, 200, headers: <String, String>{
-      'content-type': 'text/html;charset=utf-8',
-    });
+    return http.Response(
+      body,
+      200,
+      headers: <String, String>{'content-type': 'text/html;charset=utf-8'},
+    );
   });
 }
 

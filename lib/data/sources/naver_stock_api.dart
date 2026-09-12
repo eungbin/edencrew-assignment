@@ -53,7 +53,9 @@ class NaverStockApi {
       'stock.naver.com',
       '/api/securityFe/api/fchart/domestic/stock/$symbol',
     );
-    return StockMetaDto.fromJson(_decodeJsonObject(await _client.getString(uri)));
+    return StockMetaDto.fromJson(
+      _decodeJsonObject(await _client.getString(uri)),
+    );
   }
 
   /// 4. 일별 시세 HTML 한 페이지 (10거래일)

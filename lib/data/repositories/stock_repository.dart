@@ -48,5 +48,6 @@ class StockRepository {
   }
 
   /// 다른 경로(관심 목록 복원 등)로 알게 된 메타를 캐시에 넣어 둡니다.
-  void primeStock(Stock stock) => _metaCache.putIfAbsent(stock.symbol, () => stock);
+  void primeStock(Stock stock) =>
+      _metaCache.putIfAbsent(stock.symbol, () => stock);
 }

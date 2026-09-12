@@ -54,7 +54,10 @@ void main() {
 
     test('최신 거래일이 먼저 온다', () {
       for (int i = 1; i < page1.rows.length; i++) {
-        expect(page1.rows[i - 1].date.compareTo(page1.rows[i].date), greaterThan(0));
+        expect(
+          page1.rows[i - 1].date.compareTo(page1.rows[i].date),
+          greaterThan(0),
+        );
       }
     });
 
