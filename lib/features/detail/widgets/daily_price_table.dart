@@ -108,7 +108,7 @@ class _DailyPriceRowsState extends State<DailyPriceRows> {
   }
 }
 
-/// 달 하나의 헤더 + 행 목록입니다. 펼침 상태가 바뀌면 높이를 200ms 동안 부드럽게 바꿉니다.
+/// 달 하나의 헤더 + 행 목록입니다. 펼침 상태가 바뀌면 높이를 320ms 동안 부드럽게 바꿉니다.
 ///
 /// 접혀서 애니메이션이 끝난 뒤에는 행 위젯을 아예 만들지 않습니다.
 /// 1년(245행)에서 모든 달을 접어 두었을 때 보이지 않는 행이 메모리에 남지 않게 하기 위해서입니다.
@@ -130,7 +130,8 @@ class _MonthSection extends StatefulWidget {
 
 class _MonthSectionState extends State<_MonthSection>
     with SingleTickerProviderStateMixin {
-  static const Duration _duration = Duration(milliseconds: 200);
+  /// 200ms는 눈으로 따라가기 전에 끝나 버려 320ms로 잡았습니다. 스크롤 이동도 같은 값을 씁니다.
+  static const Duration _duration = Duration(milliseconds: 320);
 
   late final AnimationController _controller = AnimationController(
     vsync: this,
@@ -139,7 +140,7 @@ class _MonthSectionState extends State<_MonthSection>
   );
   late final Animation<double> _curve = CurvedAnimation(
     parent: _controller,
-    curve: Curves.easeInOut,
+    curve: Curves.easeInOutCubic,
   );
 
   @override
@@ -188,7 +189,11 @@ class _MonthSectionState extends State<_MonthSection>
     );
     if (target <= position.pixels + 0.5) return;
 
-    position.animateTo(target, duration: _duration, curve: Curves.easeInOut);
+    position.animateTo(
+      target,
+      duration: _duration,
+      curve: Curves.easeInOutCubic,
+    );
   }
 
   @override
