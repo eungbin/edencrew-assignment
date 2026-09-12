@@ -85,29 +85,108 @@ class _DailyPriceRowsState extends State<DailyPriceRows> {
     final List<MonthlyGroup> groups = groupByMonth(rows);
     _syncDefaultExpansion(groups);
 
-    // 섹션 헤더와 펼쳐진 행을 하나의 평평한 목록으로 만들어 sliver에 넘깁니다.
-    final List<Widget> children = <Widget>[];
-    for (final MonthlyGroup group in groups) {
-      final bool expanded = _expanded.contains(group.yearMonth);
-      children.add(
-        _MonthHeader(
+    // 달마다 섹션 하나. 섹션 안에서 헤더와 행 목록을 애니메이션으로 접었다 폅니다.
+    return SliverList.builder(
+      itemCount: groups.length,
+      itemBuilder: (BuildContext context, int index) {
+        final MonthlyGroup group = groups[index];
+        return _MonthSection(
+          key: ValueKey<String>(group.yearMonth),
           group: group,
-          expanded: expanded,
-          onTap: () => setState(() {
+          expanded: _expanded.contains(group.yearMonth),
+          onToggle: () => setState(() {
             if (!_expanded.remove(group.yearMonth)) {
               _expanded.add(group.yearMonth);
             }
           }),
-        ),
-      );
-      if (expanded) {
-        children.addAll(group.rows.map((DailyPrice p) => _DailyRow(price: p)));
+        );
+      },
+    );
+  }
+}
+
+/// 달 하나의 헤더 + 행 목록입니다. 펼침 상태가 바뀌면 높이를 200ms 동안 부드럽게 바꿉니다.
+///
+/// 접혀서 애니메이션이 끝난 뒤에는 행 위젯을 아예 만들지 않습니다.
+/// 1년(245행)에서 모든 달을 접어 두었을 때 보이지 않는 행이 메모리에 남지 않게 하기 위해서입니다.
+class _MonthSection extends StatefulWidget {
+  const _MonthSection({
+    super.key,
+    required this.group,
+    required this.expanded,
+    required this.onToggle,
+  });
+
+  final MonthlyGroup group;
+  final bool expanded;
+  final VoidCallback onToggle;
+
+  @override
+  State<_MonthSection> createState() => _MonthSectionState();
+}
+
+class _MonthSectionState extends State<_MonthSection>
+    with SingleTickerProviderStateMixin {
+  static const Duration _duration = Duration(milliseconds: 200);
+
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: _duration,
+    value: widget.expanded ? 1 : 0,
+  );
+  late final Animation<double> _curve = CurvedAnimation(
+    parent: _controller,
+    curve: Curves.easeInOut,
+  );
+
+  @override
+  void didUpdateWidget(covariant _MonthSection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.expanded != widget.expanded) {
+      if (widget.expanded) {
+        _controller.forward();
+      } else {
+        _controller.reverse();
       }
     }
+  }
 
-    return SliverList.builder(
-      itemCount: children.length,
-      itemBuilder: (BuildContext context, int index) => children[index],
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        _MonthHeader(
+          group: widget.group,
+          expanded: widget.expanded,
+          rotation: _curve,
+          onTap: widget.onToggle,
+        ),
+        AnimatedBuilder(
+          animation: _controller,
+          builder: (BuildContext context, Widget? child) {
+            if (_controller.isDismissed) return const SizedBox.shrink();
+            return ClipRect(
+              child: SizeTransition(
+                sizeFactor: _curve,
+                alignment: Alignment.topCenter,
+                child: FadeTransition(opacity: _curve, child: child),
+              ),
+            );
+          },
+          child: Column(
+            children: <Widget>[
+              for (final DailyPrice p in widget.group.rows) _DailyRow(price: p),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
@@ -117,11 +196,15 @@ class _MonthHeader extends StatelessWidget {
   const _MonthHeader({
     required this.group,
     required this.expanded,
+    required this.rotation,
     required this.onTap,
   });
 
   final MonthlyGroup group;
   final bool expanded;
+
+  /// 0(접힘) → 1(펼침). 화살표를 아래에서 위로 돌리는 데 씁니다.
+  final Animation<double> rotation;
   final VoidCallback onTap;
 
   @override
@@ -171,13 +254,17 @@ class _MonthHeader extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: dimens.space2),
-                // 펼침 표시: 시안에 별도 아이콘이 없어 뒤로 가기 셰브론을 회전해 씁니다.
-                RotatedBox(
-                  quarterTurns: expanded ? 1 : 3,
-                  child: AppSvgIcon(
-                    AppIcons.back,
-                    size: dimens.iconSm,
-                    color: colors.textTertiary,
+                // 펼침 표시: 시안에 별도 아이콘이 없어 뒤로 가기 화살표를 아래로 돌려 두고,
+                // 펼칠 때 반 바퀴 돌려 위를 가리키게 합니다.
+                RotationTransition(
+                  turns: Tween<double>(begin: 0, end: 0.5).animate(rotation),
+                  child: RotatedBox(
+                    quarterTurns: 3,
+                    child: AppSvgIcon(
+                      AppIcons.back,
+                      size: dimens.iconSm,
+                      color: colors.textTertiary,
+                    ),
                   ),
                 ),
               ],
