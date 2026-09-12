@@ -1,4 +1,7 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/utils/formatters.dart';
@@ -145,10 +148,47 @@ class _MonthSectionState extends State<_MonthSection>
     if (oldWidget.expanded != widget.expanded) {
       if (widget.expanded) {
         _controller.forward();
+        WidgetsBinding.instance.addPostFrameCallback((_) => _revealRows());
       } else {
         _controller.reverse();
       }
     }
+  }
+
+  /// 펼치는 동안 스크롤을 함께 내려 그 달의 행이 모두 보이게 합니다.
+  ///
+  /// - 펼친 뒤 섹션 전체가 화면에 들어오면, 마지막 행이 화면 아래에 닿을 만큼만 내립니다.
+  /// - 섹션이 화면보다 길면 헤더를 화면 맨 위에 붙입니다.
+  /// - 이미 다 보이면 움직이지 않고, 위로 되돌리지도 않습니다.
+  ///
+  /// 스크롤 애니메이션을 높이 애니메이션과 같은 시간 · 곡선으로 돌리면
+  /// 매 프레임 "늘어난 만큼만" 내려가서 목록 끝을 넘는 일이 없습니다.
+  void _revealRows() {
+    if (!mounted) return;
+    final RenderObject? render = context.findRenderObject();
+    if (render is! RenderBox || !render.hasSize) return;
+    final ScrollableState? scrollable = Scrollable.maybeOf(context);
+    if (scrollable == null) return;
+    final RenderAbstractViewport? viewport = RenderAbstractViewport.maybeOf(
+      render,
+    );
+    if (viewport == null) return;
+
+    final double rowsHeight = widget.group.rows.length * _DailyRow.height;
+    final ScrollPosition position = scrollable.position;
+    // 지금은 헤더만 있는 상태라, 펼쳐진 뒤의 바닥은 현재 바닥에 행 높이를 더한 위치입니다.
+    final double alignBottom =
+        viewport.getOffsetToReveal(render, 1.0).offset + rowsHeight;
+    final double alignTop = viewport.getOffsetToReveal(render, 0.0).offset;
+    final double maxAfterExpand = position.maxScrollExtent + rowsHeight;
+
+    final double target = math.min(
+      math.min(alignBottom, alignTop),
+      maxAfterExpand,
+    );
+    if (target <= position.pixels + 0.5) return;
+
+    position.animateTo(target, duration: _duration, curve: Curves.easeInOut);
   }
 
   @override
@@ -281,6 +321,9 @@ class _DailyRow extends StatelessWidget {
 
   final DailyPrice price;
 
+  /// 시안의 표 행 높이. 펼칠 때 스크롤 양을 계산하는 데도 씁니다.
+  static const double height = 32;
+
   @override
   Widget build(BuildContext context) {
     final AppColors colors = context.colors;
@@ -289,7 +332,7 @@ class _DailyRow extends StatelessWidget {
     );
 
     return Container(
-      height: 32,
+      height: height,
       decoration: BoxDecoration(
         border: Border(
           top: BorderSide(
