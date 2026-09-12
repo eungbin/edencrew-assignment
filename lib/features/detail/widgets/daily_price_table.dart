@@ -133,9 +133,13 @@ class _MonthSectionState extends State<_MonthSection>
   /// 200ms는 눈으로 따라가기 전에 끝나 버려 320ms로 잡았습니다. 스크롤 이동도 같은 값을 씁니다.
   static const Duration _duration = Duration(milliseconds: 320);
 
+  /// 접을 때는 스크롤이 같이 움직이지 않아 같은 시간이어도 더 빠르게 느껴져 조금 더 길게 둡니다.
+  static const Duration _reverseDuration = Duration(milliseconds: 400);
+
   late final AnimationController _controller = AnimationController(
     vsync: this,
     duration: _duration,
+    reverseDuration: _reverseDuration,
     value: widget.expanded ? 1 : 0,
   );
   late final Animation<double> _curve = CurvedAnimation(
@@ -217,11 +221,13 @@ class _MonthSectionState extends State<_MonthSection>
           animation: _controller,
           builder: (BuildContext context, Widget? child) {
             if (_controller.isDismissed) return const SizedBox.shrink();
+            // 투명도는 건드리지 않습니다. 접을 때 행이 먼저 흐려지면 높이가 줄어드는
+            // 동작이 보이기 전에 끝난 것처럼 느껴져서, 헤더 아래로 밀려 들어가는 모습만 보여줍니다.
             return ClipRect(
               child: SizeTransition(
                 sizeFactor: _curve,
                 alignment: Alignment.topCenter,
-                child: FadeTransition(opacity: _curve, child: child),
+                child: child,
               ),
             );
           },
